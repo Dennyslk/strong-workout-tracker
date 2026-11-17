@@ -7,51 +7,91 @@
 <style>
 *{box-sizing:border-box}body{font-family:-apple-system,BlinkMacSystemFont,Arial,sans-serif;background:#f7f3fa;color:#292131;margin:0}header{background:#24172f;color:#fff;padding:26px 20px}header h1{margin:0;font-size:33px}header p{color:#dbcae5;margin-bottom:0}.wrap{max-width:650px;margin:auto;padding:16px}.card{background:#fff;padding:18px;border-radius:17px;margin-bottom:14px;box-shadow:0 2px 12px #36203914}.days{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}.days button{border:0;border-radius:9px;padding:11px 2px;background:#f1e7f5;color:#382542}.days button.on{background:#7c4292;color:#fff}.btn{background:#7c4292;color:#fff;border:0;border-radius:10px;padding:12px;font-weight:bold}.light{background:#eee3f3;color:#59326b}.nav{display:flex;gap:8px;margin-top:13px}.nav button{flex:1}h2{margin:0 0 12px}h3{margin:5px 0}.muted{color:#776a80;font-size:13px}.exercise{border-bottom:1px solid #eae2ee;padding:15px 0}.line{display:flex;justify-content:space-between;align-items:center;gap:8px}.set{display:grid;grid-template-columns:45px 1fr 1fr 36px;gap:8px;align-items:center;margin:9px 0}.set input{width:100%;min-width:0;padding:9px;border:1px solid #d8cddd;border-radius:8px;font-size:16px}.set input[type=checkbox]{width:25px;height:25px;accent-color:#7c4292}.tabs{display:flex;position:sticky;top:0;background:white;z-index:3}.tabs button{flex:1;padding:14px 5px;background:white;border:0;font-weight:bold;color:#664a74}.tabs button.on{border-bottom:3px solid #7c4292}.hide{display:none}label{font-size:13px}.field{display:block;width:100%;padding:12px;margin:6px 0 12px;border:1px solid #d8cddd;border-radius:9px;font-size:16px}
 </style>
-</head>
+<style>
+.week-nav{display:flex;align-items:center;justify-content:space-between;gap:6px;margin:12px 0}.week-nav .btn{padding:10px 8px}.week-nav strong{font-size:13px}.edit-item{display:flex;align-items:center;gap:6px;border-top:1px solid #eadfed;padding:9px 0}.edit-item span{flex:1;font-size:13px}.edit-item button{padding:7px 9px}.bar{height:9px;border-radius:6px;overflow:hidden;background:#efe6f3;margin:3px 0 12px}.bar span{display:block;background:#7c4292;height:100%}[hidden]{display:none!important}
+</style></head>
 <body>
 <header><h1>STRONG ✦</h1><p>My Bodybuilding Coach · 5'4" · 144 lb</p></header>
 <div class="tabs"><button onclick="tab('train',this)" class="on">Workouts</button><button onclick="tab('history',this)">History</button><button onclick="tab('body',this)">Body Stats</button></div>
 <div class="wrap">
-<section id="train"><div class="card"><h2 id="title"></h2><p id="focus" class="muted"></p><div id="days" class="days"></div><div class="nav"><button class="btn light" onclick="move(-1)">‹ Previous</button><button class="btn light" onclick="move(1)">Next ›</button></div></div><div id="exercises" class="card"></div><div class="card"><p id="progress"></p><button class="btn" onclick="finish()" style="width:100%">Save Completed Workout</button></div></section>
+<section id="train"><div class="card"><h2 id="title"></h2><p id="focus" class="muted"></p><div id="days" class="days"></div><div class="nav"><button class="btn light" onclick="move(-1)">‹ Previous</button><button class="btn light" onclick="move(1)">Next ›</button></div></div><div class="card"><div class="week-nav"><button class="btn light" onclick="shiftWeek(-1)">‹ Week</button><strong id="weekLabel"></strong><button class="btn light" onclick="shiftWeek(1)">Week ›</button></div><div class="line"><button class="btn light" onclick="todayWeek()">Current week</button><button class="btn" onclick="toggleEditor()">✎ Edit workout</button></div><p class="muted">Add or replace exercises each week. Completed workout history is preserved.</p><div id="editor" hidden><label>Exercise<input class="field" id="newName" placeholder="Exercise name"></label><label>Sets<input class="field" id="newSets" type="number" value="3" min="1" max="10"></label><label>Reps<input class="field" id="newReps" value="10–12"></label><button class="btn" onclick="addExercise()">+ Add exercise</button><div id="editList"></div><div class="week-nav"><button class="btn light" onclick="copyPrevious()">Copy previous week</button><button class="btn light" onclick="resetDay()">Restore default</button></div></div></div><div id="exercises" class="card"></div><div class="card"><p id="progress"></p><button class="btn" onclick="finish()" style="width:100%">Save Completed Workout</button></div></section>
 <section id="history" class="hide"><h2>Workout History</h2><div id="past"></div></section>
-<section id="body" class="hide"><h2>Body Measurements</h2><div class="card"><label>Weight (lb)<input class="field" id="weight" type="number" step=".1"></label><label>Waist (in)<input class="field" id="waist" type="number" step=".1"></label><label>Glutes/Hips (in)<input class="field" id="hips" type="number" step=".1"></label><label>Thigh (in)<input class="field" id="thigh" type="number" step=".1"></label><label>Arm (in)<input class="field" id="arm" type="number" step=".1"></label><button class="btn" onclick="measure()">Save Measurements</button></div><div id="measurements"></div></section>
+<section id="body" class="hide"><h2>Body Measurements</h2><div class="card"><label>Weight (lb)<input class="field" id="weight" type="number" step=".1"></label><label>Waist (in)<input class="field" id="waist" type="number" step=".1"></label><label>Glutes/Hips (in)<input class="field" id="hips" type="number" step=".1"></label><label>Thigh (in)<input class="field" id="thigh" type="number" step=".1"></label><label>Arm (in)<input class="field" id="arm" type="number" step=".1"></label><button class="btn" onclick="measure()">Save Measurements</button></div><div id="measurements"></div><div class="card"><h3>Protect your workout data</h3><p class="muted">Logs are saved in this browser, not on GitHub. Export a backup before clearing Safari data or switching devices.</p><button class="btn" onclick="backup()">Export Backup</button><label class="muted" style="display:block;margin-top:12px">Import backup<input class="field" type="file" accept=".json,application/json" onchange="restore(event)"></label></div></section>
 </div>
 <script>
-const plan=[
-['Back + Biceps + Abs','Build a muscular back, arms and abs',[['Lat pulldown',3,'8-12'],['Seated cable row',3,'8-12'],['Landmine row',2,'10/arm'],['Rear delt cable fly',2,'12-15'],['Pro Maxima biceps curl',3,'10-12'],['Hammer curls',2,'10-12'],['Cable crunch',3,'12-15'],['Reverse crunch',2,'12-15']]],
-['Glutes + Hamstrings','Build round glutes and thick hamstrings',[['Romanian deadlift',3,'8-10'],['Barbell hip thrust',3,'8-12'],['Reverse lunges',2,'10/leg'],['Cable hamstring curl',2,'12/leg'],['Cable kickbacks',2,'12-15/leg'],['Calf raises',3,'12-15']]],
-['Active Recovery','Gentle walking and mobility',[]],
-['Shoulders + Chest + Triceps','Build rounded shoulders and defined arms',[['Dumbbell shoulder press',3,'8-10'],['Cable lateral raise',3,'12-15'],['Incline bench press',3,'8-12'],['Rear delt fly',2,'12-15'],['Triceps pushdown',3,'10-12'],['Overhead triceps extension',2,'10-12']]],
-['Quads + Glutes','Build thick quads and full glutes',[['Smith or barbell squat',3,'8-10'],['Barbell hip thrust',3,'10'],['Bulgarian split squat',2,'8-10/leg'],['Landmine squat',2,'10-12'],['Cable hip abduction',2,'15/leg'],['Calf raises',2,'12-15']]],
-['Back + Arms + Abs','More upper body and core definition',[['Lat pulldown',3,'10-12'],['Chest-supported row',3,'10-12'],['Pro Maxima biceps curl',2,'12'],['Triceps pushdown',2,'12'],['Cable crunch',3,'12-15'],['Hanging knee raises',3,'10-15']]],
-['Full Rest','Rest, recover, eat and sleep',[]]];
-const names=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
-let d=(new Date().getDay()+6)%7;
-let db=JSON.parse(localStorage.getItem('strong_data')||'{"sets":{},"history":[],"measurements":[]}');
-function save(){localStorage.setItem('strong_data',JSON.stringify(db))}
-function move(n){d=(d+n+7)%7;render()}
-function render(){
-document.getElementById('title').textContent=names[d]+' — '+plan[d][0];
-document.getElementById('focus').textContent=plan[d][1];
-document.getElementById('days').innerHTML=names.map((n,i)=>'<button class="'+(i===d?'on':'')+'" onclick="d='+i+';render()">'+n+'</button>').join('');
-let h='';
-plan[d][2].forEach((e,i)=>{
-h+='<div class="exercise"><div class="line"><div><h3>'+e[0]+'</h3><span class="muted">'+e[1]+' sets × '+e[2]+' reps</span></div><button class="btn light" onclick="demo('+i+')">▶ Demo</button></div>';
-for(let j=0;j<e[1];j++){
-let k=d+'-'+i+'-'+j,v=db.sets[k]||{};
-h+='<div class="set"><label>Set '+(j+1)+'</label><input placeholder="lb" type="number" value="'+(v.lb||'')+'" onchange="update(\''+k+'\',\'lb\',this.value)"><input placeholder="reps" type="number" value="'+(v.reps||'')+'" onchange="update(\''+k+'\',\'reps\',this.value)"><input type="checkbox" '+(v.done?'checked':'')+' onchange="update(\''+k+'\',\'done\',this.checked)"></div>';
-}h+='</div>';
-});
-document.getElementById('exercises').innerHTML=h||'<p>Recovery day — no lifting required.</p>';
-progress();}
-function update(k,f,v){if(!db.sets[k])db.sets[k]={};db.sets[k][f]=v;save();progress()}
-function progress(){let total=0,done=0;plan[d][2].forEach((e,i)=>{for(let j=0;j<e[1];j++){total++;if(db.sets[d+'-'+i+'-'+j]?.done)done++}});document.getElementById('progress').textContent=done+' of '+total+' sets completed'}
-function demo(i){let q=encodeURIComponent(plan[d][2][i][0]+' proper exercise form demonstration');window.open('https://www.youtube.com/results?search_query='+q,'_blank')}
-function finish(){let rows=[];plan[d][2].forEach((e,i)=>{for(let j=0;j<e[1];j++){let v=db.sets[d+'-'+i+'-'+j];if(v?.done)rows.push(e[0]+': '+(v.lb||'?')+' lb × '+(v.reps||'?')+' reps')}});if(!rows.length){alert('Check off your completed sets first');return}db.history.unshift({date:new Date().toLocaleString(),title:plan[d][0],rows});save();showHistory();alert('Workout saved!')}
-function showHistory(){document.getElementById('past').innerHTML=db.history.map(x=>'<div class="card"><h3>'+x.title+'</h3><p class="muted">'+x.date+'</p><p>'+x.rows.join('<br>')+'</p></div>').join('')||'No workouts recorded yet'}
-function measure(){let v={date:new Date().toLocaleDateString()};['weight','waist','hips','thigh','arm'].forEach(x=>v[x]=document.getElementById(x).value);db.measurements.unshift(v);save();showMeasures();alert('Measurements saved!')}
-function showMeasures(){document.getElementById('measurements').innerHTML=db.measurements.map(x=>'<div class="card"><b>'+x.date+'</b><p>Weight: '+x.weight+' lb · Waist: '+x.waist+' in · Hips: '+x.hips+' in · Thigh: '+x.thigh+' in · Arm: '+x.arm+' in</p></div>').join('')}
-function tab(id,btn){document.querySelectorAll('section').forEach(x=>x.classList.add('hide'));document.getElementById(id).classList.remove('hide');document.querySelectorAll('.tabs button').forEach(x=>x.classList.remove('on'));btn.classList.add('on');if(id==='history')showHistory();if(id==='body')showMeasures()}
-let sx=0;document.getElementById('train').addEventListener('touchstart',e=>sx=e.touches[0].clientX,{passive:true});document.getElementById('train').addEventListener('touchend',e=>{let delta=e.changedTouches[0].clientX-sx;if(Math.abs(delta)>100)move(delta<0?1:-1)},{passive:true});
-render();
+const defaults=[
+{title:"Back + Biceps + Abs",focus:"Develop your back, arms, and abdominal muscles.",ex:[["Lat pulldown",3,"8–12"],["Seated cable row",3,"8–12"],["Single-arm landmine row",2,"10/arm"],["Rear delt cable fly",2,"12–15"],["Pro Maxima biceps curl",3,"10–12"],["Hammer curl",2,"10–12"],["Cable crunch",3,"12–15"],["Reverse crunch",2,"12–15"]]},
+{title:"Glutes + Hamstrings",focus:"Build glutes and strong, thick hamstrings.",ex:[["Romanian deadlift",3,"8–10"],["Barbell hip thrust",3,"8–12"],["Reverse lunge",2,"10/leg"],["Cable hamstring curl (optional)",2,"12/leg"],["Cable kickback",2,"12–15/leg"],["Calf raise",3,"12–15"]]},
+{title:"Active Recovery",focus:"Optional walking and mobility. No hard lifting.",ex:[]},
+{title:"Shoulders + Chest + Triceps",focus:"Grow shoulders and defined arms.",ex:[["Dumbbell shoulder press",3,"8–10"],["Cable lateral raise",3,"12–15"],["Incline dumbbell press",3,"8–12"],["Rear delt fly",2,"12–15"],["Triceps pushdown",3,"10–12"],["Overhead triceps extension",2,"10–12"]]},
+{title:"Quads + Glutes",focus:"Build thick quads and full, round glutes.",ex:[["Smith or barbell squat",3,"8–10"],["Barbell hip thrust",3,"10"],["Bulgarian split squat",2,"8–10/leg"],["Landmine squat",2,"10–12"],["Cable hip abduction",2,"15/leg"],["Calf raise",2,"12–15"]]},
+{title:"Back + Arms + Abs",focus:"Extra back, arm, and abdominal development.",ex:[["Lat pulldown",3,"10–12"],["Chest-supported row",3,"10–12"],["Pro Maxima biceps curl",2,"12"],["Triceps pushdown",2,"12"],["Cable crunch",3,"12–15"],["Hanging knee raise",3,"10–15"]]},
+{title:"Full Rest",focus:"Recover, eat, hydrate and sleep.",ex:[]}
+];
+const names=["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const clone=o=>JSON.parse(JSON.stringify(o));
+let db;try{db=JSON.parse(localStorage.getItem("strong_data")||"{}")}catch{db={}}
+db.sets ||= {};db.history ||= [];db.measurements ||= [];db.weekPlans ||= {};db.sessionSets ||= {};db.sessions ||= [];
+const save=()=>{try{localStorage.setItem("strong_data",JSON.stringify(db))}catch{alert("Browser storage is unavailable. Export your backup.")}};
+let d=(new Date().getDay()+6)%7,offset=0,editing=false;
+function weekStart(){let n=new Date(),v=new Date(n.getFullYear(),n.getMonth(),n.getDate());v.setDate(v.getDate()-(v.getDay()+6)%7+offset*7);return v}
+function dayDate(){let v=weekStart();v.setDate(v.getDate()+d);return v}
+function dateId(v){return [v.getFullYear(),String(v.getMonth()+1).padStart(2,"0"),String(v.getDate()).padStart(2,"0")].join("-")}
+function activeId(){return dateId(dayDate())}
+function getPlan(){let k=activeId();return db.weekPlans[k] || (db.weekPlans[k]=clone(defaults[d]))}
+function setId(i,s){return activeId()+"|"+i+"|"+s}
+function shiftWeek(n){offset+=n;editing=false;render()}
+function todayWeek(){offset=0;editing=false;render()}
+function move(n){d=(d+n+7)%7;editing=false;render()}
+function toggleEditor(){editing=!editing;render()}
+function lastWeight(name){for(let w of db.sessions){for(let s of w.sets){if(s.name.toLowerCase()===name.toLowerCase() && s.lb!=="" && Number.isFinite(Number(s.lb)))return s.lb}}return ""}
+function update(id,field,val){db.sessionSets[id] ||= {};db.sessionSets[id][field]=val;save();progress()}
+function progress(){let all=0,done=0;getPlan().ex.forEach((e,i)=>{for(let s=0;s<e[1];s++){all++;if(db.sessionSets[setId(i,s)]?.done)done++}});$("progress").textContent=done+" of "+all+" sets completed"}
+function demo(i){let n=getPlan().ex[i][0];window.open("https://www.youtube.com/results?search_query="+encodeURIComponent(n+" proper exercise form tutorial"),"_blank","noopener")}
+function addExercise(){let name=$("newName").value.trim(),sets=Number($("newSets").value),reps=$("newReps").value.trim();if(!name||!Number.isInteger(sets)||sets<1||sets>10||!reps){alert("Enter a name, 1–10 sets and a rep range.");return}getPlan().ex.push([name,sets,reps]);save();render()}
+function editExercise(i){let e=getPlan().ex[i],name=prompt("Exercise name",e[0]);if(name===null)return;let sets=prompt("Number of sets",e[1]);if(sets===null)return;let reps=prompt("Rep range",e[2]);if(reps===null)return;if(!name.trim()||!Number.isInteger(+sets)||+sets<1||+sets>10||!reps.trim()){alert("Please enter valid exercise information.");return}getPlan().ex[i]=[name.trim(),+sets,reps.trim()];save();render()}
+function removeExercise(i){if(confirm("Remove this exercise for this selected week?")){getPlan().ex.splice(i,1);save();render()}}
+function resetDay(){if(confirm("Restore this day's default exercises for the selected week?")){db.weekPlans[activeId()]=clone(defaults[d]);save();render()}}
+function copyPrevious(){let prev=dayDate();prev.setDate(prev.getDate()-7);let existing=db.weekPlans[dateId(prev)];if(!existing){alert("No customized workout from the previous week. Your repeating default routine is already available.");return}db.weekPlans[activeId()]=clone(existing);save();render()}
+function render(){const p=getPlan(),start=weekStart(),end=new Date(start);end.setDate(end.getDate()+6);
+$("title").textContent=names[d]+" "+dayDate().toLocaleDateString(undefined,{month:"short",day:"numeric"})+" — "+p.title;
+$("focus").textContent=p.focus;
+$("days").innerHTML=names.map((n,i)=>'<button class="'+(i===d?'on':'')+'" data-day="'+i+'">'+n+"</button>").join("");
+document.querySelectorAll("[data-day]").forEach(b=>b.onclick=()=>{d=+b.dataset.day;editing=false;render()});
+$("weekLabel").textContent=start.toLocaleDateString(undefined,{month:"short",day:"numeric"})+" – "+end.toLocaleDateString(undefined,{month:"short",day:"numeric"});
+$("editor").hidden=!editing;
+$("editList").innerHTML=p.ex.map((e,i)=>'<div class="edit-item"><span>'+esc(e[0])+'</span><button class="btn light" data-edit="'+i+'">Edit</button><button class="btn light" data-remove="'+i+'">×</button></div>').join("");
+document.querySelectorAll("[data-edit]").forEach(b=>b.onclick=()=>editExercise(+b.dataset.edit));
+document.querySelectorAll("[data-remove]").forEach(b=>b.onclick=()=>removeExercise(+b.dataset.remove));
+let html="";
+p.ex.forEach((e,i)=>{let last=lastWeight(e[0]);
+html+='<div class="exercise"><div class="line"><div><h3>'+esc(e[0])+'</h3><span class="muted">'+e[1]+' sets × '+esc(e[2])+' reps</span>'+(last!==""?'<div class="muted">Previous logged weight: '+esc(last)+' lb</div>':"")+'</div><button class="btn light" data-demo="'+i+'">▶ Demo</button></div>';
+for(let j=0;j<e[1];j++){let k=setId(i,j),v=db.sessionSets[k]||{};html+='<div class="set"><label>Set '+(j+1)+'</label><input type="number" min="0" inputmode="decimal" aria-label="Weight in pounds" placeholder="lb" data-id="'+k+'" data-field="lb" value="'+esc(v.lb??"")+'"><input type="number" min="0" inputmode="numeric" aria-label="Repetitions" placeholder="reps" data-id="'+k+'" data-field="reps" value="'+esc(v.reps??"")+'"><input type="checkbox" aria-label="Set complete" data-id="'+k+'" data-field="done" '+(v.done?"checked":"")+"></div>"}
+html+="</div>"});
+$("exercises").innerHTML=html||"<p>Recovery day. To add exercises, tap Edit Workout.</p>";
+document.querySelectorAll("[data-demo]").forEach(b=>b.onclick=()=>demo(+b.dataset.demo));
+document.querySelectorAll("[data-id]").forEach(el=>el.addEventListener("change",()=>update(el.dataset.id,el.dataset.field,el.type==="checkbox"?el.checked:el.value)));
+progress()}
+function finish(){const p=getPlan(),sets=[];p.ex.forEach((e,i)=>{for(let j=0;j<e[1];j++){let v=db.sessionSets[setId(i,j)];if(v?.done)sets.push({name:e[0],set:j+1,lb:v.lb??"",reps:v.reps??""})}});
+if(!sets.length){alert("Check off at least one completed set.");return}
+let id=activeId(),idx=db.sessions.findIndex(s=>s.id===id);
+if(idx>=0){if(!confirm("Replace the previously saved workout for this date?"))return;db.sessions.splice(idx,1)}
+db.sessions.unshift({id,date:new Date().toISOString(),title:p.title,sets});
+Object.keys(db.sessionSets).filter(x=>x.startsWith(id+"|")).forEach(x=>delete db.sessionSets[x]);
+save();render();alert("Workout saved! Next week's checkboxes will be fresh.")}
+function showHistory(){let html=db.sessions.map(w=>'<div class="card"><h3>'+esc(w.title)+'</h3><p class="muted">'+esc(w.id)+' • '+w.sets.length+' completed sets</p>'+w.sets.map(s=>'<p class="muted">'+esc(s.name)+' — '+esc(s.lb||"—")+' lb × '+esc(s.reps||"—")+' reps</p>').join("")+"</div>").join("");
+html+=db.history.map(w=>'<div class="card"><h3>'+esc(w.title)+'</h3><p class="muted">'+esc(w.date)+'</p>'+(w.rows||[]).map(r=>'<p class="muted">'+esc(r)+"</p>").join("")+"</div>").join("");
+const by={};db.sessions.slice().reverse().forEach(w=>w.sets.forEach(s=>{let n=Number(s.lb);if(n>0)(by[s.name] ||= []).push({weight:n,date:w.id})}));
+let charts="";Object.entries(by).forEach(([name,values])=>{if(values.length<2)return;let last=values.slice(-8),max=Math.max(...last.map(v=>v.weight));charts+='<div class="card"><h3>'+esc(name)+'</h3>'+last.map(v=>'<div class="muted">'+esc(v.date)+' — '+v.weight+' lb</div><div class="bar"><span style="width:'+Math.max(3,100*v.weight/max)+'%"></span></div>').join("")+"</div>"});
+$("past").innerHTML=(charts?'<h2>Strength progress</h2>'+charts:"")+(html||'<div class="card">No saved workouts yet.</div>')}
+function measure(){let x={date:new Date().toLocaleDateString()};["weight","waist","hips","thigh","arm"].forEach(k=>x[k]=$(k).value);if(!Object.values(x).slice(1).some(Boolean)){alert("Enter at least one measurement.");return}db.measurements.unshift(x);save();showMeasures();alert("Measurements saved!")}
+function showMeasures(){$("measurements").innerHTML=db.measurements.map(m=>'<div class="card"><b>'+esc(m.date)+'</b><p>Weight: '+esc(m.weight||"—")+' lb · Waist: '+esc(m.waist||"—")+' in · Hips: '+esc(m.hips||"—")+' in · Thigh: '+esc(m.thigh||"—")+' in · Arm: '+esc(m.arm||"—")+' in</p></div>').join("")}
+function tab(id,btn){document.querySelectorAll("section").forEach(s=>s.classList.add("hide"));$(id).classList.remove("hide");document.querySelectorAll(".tabs button").forEach(b=>b.classList.remove("on"));btn.classList.add("on");if(id==="history")showHistory();if(id==="body")showMeasures()}
+function backup(){let a=document.createElement("a"),blob=new Blob([JSON.stringify(db,null,2)],{type:"application/json"});a.href=URL.createObjectURL(blob);a.download="STRONG-workout-backup.json";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
+async function restore(e){let file=e.target.files[0];if(!file)return;try{let imported=JSON.parse(await file.text());if(!Array.isArray(imported.measurements)||!Array.isArray(imported.history))throw Error("bad data");if(!confirm("Replace locally saved workout data with this backup?"))return;db=imported;db.weekPlans ||= {};db.sessionSets ||= {};db.sessions ||= [];save();render();showHistory();showMeasures();alert("Backup restored")}catch{alert("This backup could not be read.")}}
+let x0=0;$("train").addEventListener("touchstart",e=>{x0=e.touches[0].clientX},{passive:true});
+$("train").addEventListener("touchend",e=>{if(e.target.closest("input,button"))return;let diff=e.changedTouches[0].clientX-x0;if(Math.abs(diff)>110)move(diff<0?1:-1)},{passive:true});
+render();showHistory();showMeasures();
 </script></body></html>
