@@ -14,12 +14,12 @@
 <header><h1>STRONG ✦</h1><p>My Bodybuilding Coach · 5'4" · 144 lb</p></header>
 <div class="tabs"><button onclick="tab('train',this)" class="on">Workouts</button><button onclick="tab('history',this)">History</button><button onclick="tab('body',this)">Body Stats</button></div>
 <div class="wrap">
-<section id="train"><div class="card"><h2 id="title"></h2><p id="focus" class="muted"></p><div id="days" class="days"></div><div class="nav"><button class="btn light" onclick="move(-1)">‹ Previous</button><button class="btn light" onclick="move(1)">Next ›</button></div></div><div class="card"><div class="week-nav"><button class="btn light" onclick="shiftWeek(-1)">‹ Week</button><strong id="weekLabel"></strong><button class="btn light" onclick="shiftWeek(1)">Week ›</button></div><div class="line"><button class="btn light" onclick="todayWeek()">Current week</button><button class="btn" onclick="toggleEditor()">✎ Edit workout</button></div><p class="muted">Add or replace exercises each week. Completed workout history is preserved.</p><div id="editor" hidden><label>Exercise<input class="field" id="newName" placeholder="Exercise name"></label><label>Sets<input class="field" id="newSets" type="number" value="3" min="1" max="10"></label><label>Reps<input class="field" id="newReps" value="10–12"></label><button class="btn" onclick="addExercise()">+ Add exercise</button><div id="editList"></div><div class="week-nav"><button class="btn light" onclick="copyPrevious()">Copy previous week</button><button class="btn light" onclick="resetDay()">Restore default</button></div></div></div><div id="exercises" class="card"></div><div class="card"><p id="progress"></p><button class="btn" onclick="finish()" style="width:100%">Save Completed Workout</button></div></section>
+<section id="train"><div class="card"><h2 id="title"></h2><p id="focus" class="muted"></p><div id="days" class="days"></div><div class="nav"><button class="btn light" onclick="move(-1)">‹ Previous</button><button class="btn light" onclick="move(1)">Next ›</button></div></div><div class="card"><div class="week-nav"><button class="btn light" onclick="shiftWeek(-1)">‹ Week</button><strong id="weekLabel"></strong><button class="btn light" onclick="shiftWeek(1)">Week ›</button></div><div class="line"><button class="btn light" onclick="todayWeek()">Current week</button><button class="btn" onclick="toggleEditor()">✎ Edit workout</button></div><p class="muted">Add or replace exercises each week. Completed workout history is preserved.</p><div id="editor" hidden><label>Exercise<input class="field" id="newName" placeholder="Exercise name"></label><label>Sets<input class="field" id="newSets" type="number" value="3" min="1" max="10"></label><label>Reps<input class="field" id="newReps" value="10–12"></label><button class="btn" onclick="addExercise()">+ Add exercise</button><div id="editList"></div><div class="week-nav"><button class="btn light" onclick="copyPrevious()">Copy previous week</button><button class="btn light" onclick="resetDay()">Restore default</button></div></div></div><div class="card"><h3>How to progress</h3><p class="muted">Warm up before heavy lifts. Keep about 1–3 reps in reserve on most sets. When all working sets reach the top of the rep range with good form, add a small amount of weight next time. Rest 2–3 minutes on squats, hip thrusts and RDLs; 60–90 seconds on smaller exercises. Thursday is moderate conditioning; Saturday is optional if recovery is poor.</p></div><div id="exercises" class="card"></div><div class="card"><p id="progress"></p><button class="btn" onclick="finish()" style="width:100%">Save Completed Workout</button></div></section>
 <section id="history" class="hide"><h2>Workout History</h2><div id="past"></div></section>
 <section id="body" class="hide"><h2>Body Measurements</h2><div class="card"><label>Weight (lb)<input class="field" id="weight" type="number" step=".1"></label><label>Waist (in)<input class="field" id="waist" type="number" step=".1"></label><label>Glutes/Hips (in)<input class="field" id="hips" type="number" step=".1"></label><label>Thigh (in)<input class="field" id="thigh" type="number" step=".1"></label><label>Arm (in)<input class="field" id="arm" type="number" step=".1"></label><button class="btn" onclick="measure()">Save Measurements</button></div><div id="measurements"></div><div class="card"><h3>Protect your workout data</h3><p class="muted">Logs are saved in this browser, not on GitHub. Export a backup before clearing Safari data or switching devices.</p><button class="btn" onclick="backup()">Export Backup</button><label class="muted" style="display:block;margin-top:12px">Import backup<input class="field" type="file" accept=".json,application/json" onchange="restore(event)"></label></div></section>
 </div>
 <script>
-const defaults=[
+const previousDefaults=[
 {title:"Back + Biceps + Abs",focus:"Develop your back, arms, and abdominal muscles.",ex:[["Lat pulldown",3,"8–12"],["Seated cable row",3,"8–12"],["Single-arm landmine row",2,"10/arm"],["Rear delt cable fly",2,"12–15"],["Pro Maxima biceps curl",3,"10–12"],["Hammer curl",2,"10–12"],["Cable crunch",3,"12–15"],["Reverse crunch",2,"12–15"]]},
 {title:"Glutes + Hamstrings",focus:"Build glutes and strong, thick hamstrings.",ex:[["Romanian deadlift",3,"8–10"],["Barbell hip thrust",3,"8–12"],["Reverse lunge",2,"10/leg"],["Cable hamstring curl (optional)",2,"12/leg"],["Cable kickback",2,"12–15/leg"],["Calf raise",3,"12–15"]]},
 {title:"Active Recovery",focus:"Optional walking and mobility. No hard lifting.",ex:[]},
@@ -28,6 +28,15 @@ const defaults=[
 {title:"Back + Arms + Abs",focus:"Extra back, arm, and abdominal development.",ex:[["Lat pulldown",3,"10–12"],["Chest-supported row",3,"10–12"],["Pro Maxima biceps curl",2,"12"],["Triceps pushdown",2,"12"],["Cable crunch",3,"12–15"],["Hanging knee raise",3,"10–15"]]},
 {title:"Full Rest",focus:"Recover, eat, hydrate and sleep.",ex:[]}
 ];
+const defaults=[
+{title:"Heavy Quads + Glutes",focus:"Sam/Ross-inspired • Squat strength, glute development. Rest 2–3 min on first two lifts.",ex:[["Barbell or Smith back squat",3,"6–8"],["Barbell hip thrust",3,"6–10"],["Bulgarian split squat",2,"8–10/leg"],["Cable hip abduction",2,"15–20/leg"],["Cable crunch",2,"12–15"]]},
+{title:"Back + Chest + Biceps",focus:"Ross-inspired • Upper-body strength and back width. Rest 2–3 min on main lifts.",ex:[["Chin-up (assisted if needed) or lat pulldown",3,"6–10"],["Chest-supported dumbbell row",3,"8–12"],["Incline dumbbell bench press",3,"8–10"],["Single-arm cable row",2,"10–12/arm"],["Pro Maxima biceps curl",3,"10–12"],["Cable lateral raise",2,"12–15"]]},
+{title:"Hamstrings + Glutes + Abs",focus:"Sam/Jake-inspired • Hip hinge, hamstrings, glute stability. Keep controlled form.",ex:[["Barbell Romanian deadlift",3,"6–10"],["Reverse lunge",2,"8–10/leg"],["Stability ball hamstring curl",3,"10–15"],["Cable glute kickback",2,"12–15/leg"],["Standing calf raise",3,"12–15"],["Hanging knee raise or reverse crunch",3,"10–15"]]},
+{title:"Cardio + Mobility",focus:"Sam-inspired • Recovery-focused conditioning. Stay at a conversational effort; no max-effort circuit.",ex:[["Easy treadmill walk or jog",1,"20–25 min"],["Light sled push or drag",3,"30–40 sec"],["SkiErg easy pace (optional)",2,"3 min"],["90/90 hip mobility",2,"6/side"],["Half-kneeling ankle mobility",2,"8/side"],["Shoulder mobility / band pull-apart",2,"12–15"]]},
+{title:"Shoulders + Back + Arms",focus:"Ross/Eric-inspired • Shoulder caps, back thickness and visible arms. Rest 60–120 sec on accessories.",ex:[["Dumbbell shoulder press",3,"8–10"],["Close-grip lat pulldown",3,"8–12"],["Seated cable row",3,"8–12"],["Cable lateral raise",3,"12–20"],["Rear delt cable fly or face pull",3,"12–15"],["Hammer curl",2,"10–12"],["Rope triceps pushdown",3,"10–15"]]},
+{title:"Glutes + Quads Pump",focus:"Eric/Jake-inspired • Moderate-load hypertrophy. Skip or shorten this if legs have not recovered.",ex:[["Smith or landmine squat",3,"10–12"],["Barbell hip thrust (moderate)",2,"10–12"],["Box step-up",2,"10/leg"],["Cable hip abduction",3,"15–20/leg"],["Banded glute bridge",2,"15–20"],["Farmer carry (optional)",2,"30–45 sec"]]},
+{title:"Full Rest",focus:"Full rest from training. Prioritize food, sleep and recovery.",ex:[]}
+];
 const names=["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
@@ -35,6 +44,18 @@ const clone=o=>JSON.parse(JSON.stringify(o));
 let db;try{db=JSON.parse(localStorage.getItem("strong_data")||"{}")}catch{db={}}
 db.sets ||= {};db.history ||= [];db.measurements ||= [];db.weekPlans ||= {};db.sessionSets ||= {};db.sessions ||= [];
 const save=()=>{try{localStorage.setItem("strong_data",JSON.stringify(db))}catch{alert("Browser storage is unavailable. Export your backup.")}};
+
+// Migrate only untouched old template days; keep customized plans, session drafts and history.
+if(db.planVersion!==3){
+for(const [date,stored] of Object.entries(db.weekPlans)){
+const x=new Date(date+"T12:00:00");if(Number.isNaN(x.getTime()))continue;
+const day=(x.getDay()+6)%7;
+const hasDraft=Object.keys(db.sessionSets).some(k=>k.startsWith(date+"|"));
+if(!hasDraft && JSON.stringify(stored)===JSON.stringify(previousDefaults[day]))db.weekPlans[date]=clone(defaults[day]);
+}
+db.planVersion=3;
+try{localStorage.setItem("strong_data",JSON.stringify(db))}catch{}
+}
 let d=(new Date().getDay()+6)%7,offset=0,editing=false;
 function weekStart(){let n=new Date(),v=new Date(n.getFullYear(),n.getMonth(),n.getDate());v.setDate(v.getDate()-(v.getDay()+6)%7+offset*7);return v}
 function dayDate(){let v=weekStart();v.setDate(v.getDate()+d);return v}
